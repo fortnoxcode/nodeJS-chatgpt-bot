@@ -1,0 +1,36 @@
+{
+  "name": "telegram-chatgpt",
+  "version": "1.0.0",
+  "author": "fortnoxcode",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc --project tsconfig.eslint.json",
+    "start": "yarn build && node ./build/index.js",
+    "dev": "nodemon",
+    "lint": "eslint",
+    "docs": "typedoc --tsconfig tsconfig.eslint.json && open file://$(pwd)/docs/index.html"
+  },
+  "description": "Telegram ChatGPT bot",
+  "main": "index.ts",
+  "types": "index.d.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^18.15.3",
+    "@types/node-fetch": "^2.6.2",
+    "@typescript-eslint/eslint-plugin": "^5.55.0",
+    "@typescript-eslint/parser": "^5.55.0",
+    "eslint": "^8.36.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "nodemon": "^2.0.20",
+    "typedoc": "^0.23.27",
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "chatgpt-wrapper": "^1.1.2",
+    "grammy": "^1.15.3",
+    "openai": "^3.2.1",
+    "redis": "^4.6.5"
+  }
+}

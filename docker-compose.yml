@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  bot:
+    build: .
+    environment:
+      ChatGPT_API_KEY: ''
+      BOT_TOKEN: ''
+      db: redis://redis:6379/0
+    container_name: chatGPT_bot
+    restart: always
+    working_dir: /usr/src/app
+  redis:
+    image: 'redis:alpine'
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - 6379:6379
+    volumes:
+      - ./redis_data:/data
+      - ./redis_dump:/var/lib/redis
