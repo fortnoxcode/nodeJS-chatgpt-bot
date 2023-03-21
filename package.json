@@ -10,7 +10,7 @@
     "lint": "eslint",
     "docs": "typedoc --tsconfig tsconfig.eslint.json && open file://$(pwd)/docs/index.html"
   },
-  "description": "Telegram ChatGPT bot",
+  "description": "Node.js + TypeScript + ESLint template",
   "main": "index.ts",
   "types": "index.d.ts",
   "type": "module",

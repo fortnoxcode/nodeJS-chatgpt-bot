@@ -1,11 +1,11 @@
 import * as grammy from 'grammy';
 
-import commands from './bot/command/index.js';
+import { Start, Message } from './bot/command/index.js';
 
 const bot = new grammy.Bot(`${process.env.BOT_TOKEN}`);
 
-commands.Start(bot);
-commands.Message(bot);
+Start(bot);
+Message(bot);
 
 bot.start({
   onStart(botInfo) {

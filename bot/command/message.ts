@@ -14,9 +14,9 @@ export default (bot) => {
 
     if (await db.getField(ctx.from.id, 'pending') === '1') {
       const warningMessage = await bot.api.sendMessage(ctx.from.id, 'Подождите, предыдущий запрос ещё не обработан!');
-
-      bot.api.sendChatAction(ctx.chat.id, 'typing').catch((e) => {console.log(e)});
-
+      bot.api.sendChatAction(ctx.chat.id, 'typing').catch((e) => {
+        console.log(e);
+      });
       setTimeout(async () => {
         await bot.api.deleteMessage(ctx.chat.id, warningMessage.message_id);
         await bot.api.deleteMessage(ctx.chat.id, ctx.message.message_id);
@@ -25,13 +25,11 @@ export default (bot) => {
     }
 
     await db.setField({ userID: ctx.from.id, key: 'pending', value: 1 });
-
     const msg = await ctx.reply('Генерирую ответ...');
 
     bot.api.sendChatAction(ctx.chat.id, 'typing').catch((e) => {
       console.log(e);
     });
-
     await db.setContext({
       userID: ctx.from.id,
       role: 'user',
@@ -45,8 +43,7 @@ export default (bot) => {
       try {
         await ctx.api.editMessageText(ctx.chat.id, msg.message_id, answer);
       } catch (error) {
-        // console.log(error);
-        clearInterval(edit); // тут он сабя вырубает сам
+        clearInterval(edit);
       }
     }, 1000);
 
@@ -64,7 +61,6 @@ export default (bot) => {
         console.log(error);
       }
     });
-    
     stream.on('end', async () => {
       const endMessage = await bot.api.sendMessage(ctx.chat.id, 'Генерация завершена!');
 
@@ -83,7 +79,6 @@ export default (bot) => {
           key: 'pending',
           value: '0',
         });
-        console.log(`${ctx.message.from.first_name} (@${ctx.message.from.username})\nprompt: ${ctx.message.text}\nanswer:\n${answer}`);
       } catch (error) {
         console.log(error);
       }

@@ -132,4 +132,4 @@ dist
 build/
 redis_data/
 redis_dump/
-.gitattributes
+docker-compose.dev.yml

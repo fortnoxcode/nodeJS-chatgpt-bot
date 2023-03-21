@@ -1,7 +1,2 @@
-import Start from './start.js';
-import Message from './message.js';
-
-const commands: { [key: string]: Function } = {
-  Start, Message,
-};
-export default commands;
+export { default as Start } from './start.js';
+export { default as Message } from './message.js';
