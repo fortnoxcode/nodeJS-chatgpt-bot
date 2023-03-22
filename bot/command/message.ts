@@ -8,12 +8,12 @@ const chat = new ChatGPT({
 export default (bot) => {
   bot.on('message', async (ctx) => {
     if (!ctx.message.text) {
-      ctx.reply('Я не умею работать с тем, что не является текстом!');
+      ctx.reply("I don't know how to work with something that isn't text!");
       return;
     }
 
     if (await db.getField(ctx.from.id, 'pending') === '1') {
-      const warningMessage = await bot.api.sendMessage(ctx.from.id, 'Подождите, предыдущий запрос ещё не обработан!');
+      const warningMessage = await bot.api.sendMessage(ctx.from.id, 'Wait, the previous request has not been processed yet!');
       bot.api.sendChatAction(ctx.chat.id, 'typing').catch((e) => {
         console.log(e);
       });
@@ -24,12 +24,9 @@ export default (bot) => {
       return;
     }
 
-    await db.setField({ userID: ctx.from.id, key: 'pending', value: 1 });
-    const msg = await ctx.reply('Генерирую ответ...');
+    const msg = await ctx.reply('Generating a response...');
 
-    bot.api.sendChatAction(ctx.chat.id, 'typing').catch((e) => {
-      console.log(e);
-    });
+    bot.api.sendChatAction(ctx.chat.id, 'typing').catch((e) => { console.log(e); });
     await db.setContext({
       userID: ctx.from.id,
       role: 'user',
@@ -37,6 +34,8 @@ export default (bot) => {
     });
 
     const stream = await chat.stream(await db.getContext(ctx.from.id));
+
+    await db.setField({ userID: ctx.from.id, key: 'pending', value: 1 });
 
     let answer = '';
     const edit = setInterval(async () => {
@@ -59,15 +58,11 @@ export default (bot) => {
         });
       } catch (error) {
         console.log(error);
+        await db.setField({ userID: ctx.from.id, key: 'pending', value: 0 });
       }
     });
+
     stream.on('end', async () => {
-      const endMessage = await bot.api.sendMessage(ctx.chat.id, 'Генерация завершена!');
-
-      setTimeout(async () => {
-        await bot.api.deleteMessage(ctx.chat.id, endMessage.message_id);
-      }, 2000);
-
       try {
         await db.setContext({
           userID: ctx.from.id,
@@ -79,7 +74,14 @@ export default (bot) => {
           key: 'pending',
           value: '0',
         });
+
+        const endMessage = await bot.api.sendMessage(ctx.chat.id, 'Generation completed!');
+
+        setTimeout(async () => {
+          await bot.api.deleteMessage(ctx.chat.id, endMessage.message_id);
+        }, 2000);
       } catch (error) {
+        await db.setField({ userID: ctx.from.id, key: 'pending', value: 0 });
         console.log(error);
       }
     });
